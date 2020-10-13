@@ -1,10 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { TodayScreen } from "./Today";
 
 export function Today() {
-    return (
-        <View>
-            <Text>Today page</Text>
-        </View>
-    );
+    return <TodayScreen />;
 }

@@ -8,9 +8,12 @@ export const colorTheme = {
 
     white: "#F9F9F9",
     black: "#333333",
+    red: "#FE6358",
 
     grey0: "#1A1F33",
     grey1: "#5B6176",
+
+    shadow: "#0000001a",
 };
 
 export const ElementsTheme: Theme = {
@@ -21,7 +24,28 @@ export const ElementsTheme: Theme = {
     Text: {
         style: {
             fontSize: 16,
+            color: colorTheme.grey1,
             ...fonts.regular,
+        },
+
+        h1Style: {
+            fontSize: 39,
+            ...fonts.bold,
+        },
+
+        h2Style: {
+            fontSize: 32,
+            ...fonts.bold,
+        },
+
+        h3Style: {
+            fontSize: 25,
+            ...fonts.bold,
+        },
+
+        h4Style: {
+            fontSize: 20,
+            ...fonts.semiBold,
         },
     },
 };
