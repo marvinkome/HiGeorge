@@ -19,11 +19,11 @@ export function TaskCard() {
                 <View style={styles.time}>
                     <Icon
                         name="alarm"
-                        size={18}
+                        size={16}
                         color={colorTheme.red}
                         style={{ marginRight: 5 }}
                     />
-                    <Text>9:00 AM</Text>
+                    <Text style={{ fontSize: 14 }}>9:00 AM</Text>
                 </View>
             </View>
         </View>

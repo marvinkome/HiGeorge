@@ -10,7 +10,7 @@ import { Icon, Text } from "react-native-elements";
 import { LandingPage } from "screens/LandingPage";
 import { Today } from "screens/Today";
 import { Habits } from "screens/Habits";
-import { Goals } from "screens/Goals";
+// import { Goals } from "screens/Goals";
 
 const EmptyScreen = () => null;
 
@@ -20,7 +20,7 @@ const tabBarOptions = () => ({
 });
 export function HomeTabNavigator() {
     return (
-        <HomeTab.Navigator tabBarOptions={tabBarOptions()}>
+        <HomeTab.Navigator initialRouteName="Habits" tabBarOptions={tabBarOptions()}>
             <HomeTab.Screen
                 name="Today"
                 component={Today}
@@ -70,7 +70,8 @@ export function HomeTabNavigator() {
                     ),
                 }}
             />
-            <HomeTab.Screen
+
+            {/* <HomeTab.Screen
                 name="Goals"
                 component={Goals}
                 options={{
@@ -93,7 +94,7 @@ export function HomeTabNavigator() {
                         />
                     ),
                 }}
-            />
+            /> */}
         </HomeTab.Navigator>
     );
 }

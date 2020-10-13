@@ -9,6 +9,7 @@ export const colorTheme = {
     white: "#F9F9F9",
     black: "#333333",
     red: "#FE6358",
+    green: "#6FCF97",
 
     grey0: "#1A1F33",
     grey1: "#5B6176",
@@ -45,6 +46,27 @@ export const ElementsTheme: Theme = {
 
         h4Style: {
             fontSize: 20,
+            ...fonts.semiBold,
+        },
+    },
+
+    Button: {
+        containerStyle: {
+            marginBottom: 10,
+        },
+
+        buttonStyle: {
+            borderRadius: 50,
+            paddingVertical: 15,
+            backgroundColor: colorTheme.primary,
+        },
+
+        icon: {
+            color: colorTheme.white,
+        },
+
+        titleStyle: {
+            fontSize: 16,
             ...fonts.semiBold,
         },
     },

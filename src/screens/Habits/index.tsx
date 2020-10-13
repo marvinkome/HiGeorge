@@ -1,10 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { HabitsScreen } from "./Habits";
 
 export function Habits() {
-    return (
-        <View>
-            <Text>Habits page</Text>
-        </View>
-    );
+    return <HabitsScreen />;
 }
