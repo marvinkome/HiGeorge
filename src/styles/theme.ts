@@ -13,6 +13,7 @@ export const colorTheme = {
 
     grey0: "#1A1F33",
     grey1: "#5B6176",
+    grey2: "#555555",
 
     shadow: "#0000001a",
 };
@@ -47,6 +48,13 @@ export const ElementsTheme: Theme = {
         h4Style: {
             fontSize: 20,
             ...fonts.semiBold,
+        },
+    },
+
+    Input: {
+        inputStyle: {
+            ...fonts.regular,
+            fontSize: 17,
         },
     },
 

@@ -10,6 +10,7 @@ import { Icon, Text } from "react-native-elements";
 import { LandingPage } from "screens/LandingPage";
 import { Today } from "screens/Today";
 import { Habits } from "screens/Habits";
+import { AddHabit } from "screens/AddHabit";
 // import { Goals } from "screens/Goals";
 
 const EmptyScreen = () => null;
@@ -104,7 +105,7 @@ export function MainStackNavigator() {
     return (
         <MainStack.Navigator headerMode="none">
             <MainStack.Screen name="Home" component={HomeTabNavigator} />
-            <MainStack.Screen name="AddHabit" component={EmptyScreen} />
+            <MainStack.Screen name="AddHabit" component={AddHabit} />
             <MainStack.Screen name="AddGoal" component={EmptyScreen} />
             <MainStack.Screen name="GoalDetails" component={EmptyScreen} />
         </MainStack.Navigator>
@@ -117,7 +118,7 @@ export function RootNavigator() {
     return (
         <RootStack.Navigator headerMode="none">
             {isLoggedIn ? (
-                <RootStack.Screen name="Main" component={MainStackNavigator} />
+                <RootStack.Screen name="Main" component={HomeTabNavigator} />
             ) : (
                 <RootStack.Screen name="LandingPage" component={LandingPage} />
             )}
