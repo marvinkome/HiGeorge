@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, CheckBox, Text } from "react-native-elements";
+import { Day } from "store";
 import { fonts } from "styles/fonts";
 import { colorTheme } from "styles/theme";
-
-type Day = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
 
 type IProps = {
     toggleModal: () => void;

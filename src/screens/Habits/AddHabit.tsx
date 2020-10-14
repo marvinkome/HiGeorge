@@ -8,7 +8,7 @@ import { colorTheme } from "styles/theme";
 import { fonts } from "styles/fonts";
 
 export function AddHabit() {
-    const [isInputModalVisible, setInputModalVisible] = useState(true);
+    const [isInputModalVisible, setInputModalVisible] = useState(false);
     const [isIntervalModalVisible, setIntervalModalVisible] = useState(false);
     const [showingTimePicker, showTimePicker] = useState(false);
 

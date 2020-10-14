@@ -5,13 +5,16 @@ import { ThemeProvider } from "react-native-elements";
 import { NavigationContainer } from "@react-navigation/native";
 import { RootNavigator } from "./navigators";
 import { ElementsTheme } from "styles/theme";
+import { StoreProvider } from "store/context";
 
 export default function App() {
     return (
-        <ThemeProvider theme={ElementsTheme}>
-            <NavigationContainer ref={navigationRef}>
-                <RootNavigator />
-            </NavigationContainer>
-        </ThemeProvider>
+        <StoreProvider>
+            <ThemeProvider theme={ElementsTheme}>
+                <NavigationContainer ref={navigationRef}>
+                    <RootNavigator />
+                </NavigationContainer>
+            </ThemeProvider>
+        </StoreProvider>
     );
 }

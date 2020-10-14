@@ -1,29 +1,38 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Icon, CheckBox, Text } from "react-native-elements";
+import { fonts } from "styles/fonts";
 import { colorTheme } from "styles/theme";
 
-export function TaskCard() {
+type IProps = {
+    done: boolean;
+    title: string;
+    streak: number;
+    markAsDone: () => void;
+};
+export function TaskCard(props: IProps) {
     return (
         <View style={styles.container}>
             <CheckBox
+                containerStyle={{ justifyContent: "center" }}
                 checkedIcon={<Icon name="checkmark-circle-outline" type="ionicon" />}
                 uncheckedIcon={<Icon name="circle" type="feather" />}
-                checked={false}
-                containerStyle={{ justifyContent: "center" }}
+                checked={props.done}
+                onPress={props.markAsDone}
             />
 
             <View style={styles.taskDetails}>
-                <Text>Plan marketing stretegy with Mark and Steve</Text>
+                <Text>{props.title}</Text>
 
                 <View style={styles.time}>
                     <Icon
-                        name="alarm"
+                        name="flame"
+                        type="ionicon"
                         size={16}
-                        color={colorTheme.red}
+                        color={props.streak ? colorTheme.red : colorTheme.grey1}
                         style={{ marginRight: 5 }}
                     />
-                    <Text style={{ fontSize: 14 }}>9:00 AM</Text>
+                    <Text style={{ ...fonts.bold }}>{props.streak}</Text>
                 </View>
             </View>
         </View>
