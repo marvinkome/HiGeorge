@@ -1,9 +1,14 @@
 import React from "react";
-// import { useRootData } from "store/hook";
+import { observer } from "mobx-react-lite";
+import { useStore } from "store/hook";
 import { HabitsScreen } from "./Habits";
 
-export function Habits() {
-    // const habits = useRootData((store) => store.habits);
+export const Habits = observer(() => {
+    const { habits, addHabit } = useStore((store) => ({
+        habits: store.habits,
+        addHabit: store.addHabit,
+    }));
 
-    return <HabitsScreen />;
-}
+    console.log(habits);
+    return <HabitsScreen habits={habits} addHabit={addHabit} />;
+});

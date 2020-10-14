@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, CheckBox, Text } from "react-native-elements";
 import { Day } from "store";
@@ -6,14 +6,14 @@ import { fonts } from "styles/fonts";
 import { colorTheme } from "styles/theme";
 
 type IProps = {
+    selectedDays: Day[];
+    setSelectedDays: (days: Day[]) => void;
     toggleModal: () => void;
 };
 
 const days: Day[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-export function IntervalPicker(props: IProps) {
-    const [selectedDays, setSelectedDays] = useState<Day[]>([]);
-
+export function IntervalPicker({ selectedDays, setSelectedDays, toggleModal }: IProps) {
     const toggleDay = (day: Day) => {
         if (selectedDays.includes(day)) {
             setSelectedDays(selectedDays.filter((d) => d === day));
@@ -63,7 +63,7 @@ export function IntervalPicker(props: IProps) {
                 })}
             </View>
 
-            <Text onPress={props.toggleModal} style={styles.intervalDoneText}>
+            <Text onPress={toggleModal} style={styles.intervalDoneText}>
                 Done
             </Text>
         </View>

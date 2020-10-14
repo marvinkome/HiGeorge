@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import Modal from "react-native-modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Alert } from "react-native";
 import { Button, Input, Icon, Text } from "react-native-elements";
 import { IntervalPicker } from "./IntervalPicker";
 import { colorTheme } from "styles/theme";
 import { fonts } from "styles/fonts";
+import { Day, Time } from "store";
+import dayjs from "dayjs";
 
-export function AddHabit() {
+type AddHabitViewProps = {
+    text: string;
+    interval: Day[];
+    time: Date;
+    setInterval: (day: Day[]) => void;
+    changeText: (text: string) => void;
+    setTime: (time: Date) => void;
+    addHabit: () => void;
+};
+function AddHabitView(props: AddHabitViewProps) {
     const [isInputModalVisible, setInputModalVisible] = useState(false);
     const [isIntervalModalVisible, setIntervalModalVisible] = useState(false);
     const [showingTimePicker, showTimePicker] = useState(false);
@@ -53,6 +64,8 @@ export function AddHabit() {
                         returnKeyType="done"
                         multiline={true}
                         blurOnSubmit={true}
+                        value={props.text}
+                        onChangeText={props.changeText}
                         selectionColor={colorTheme.primary}
                         inputContainerStyle={styles.inputContainer}
                     />
@@ -67,14 +80,18 @@ export function AddHabit() {
                                     size={15}
                                     color={colorTheme.green}
                                 />
-                                <Text style={styles.optionText}>Daily</Text>
+                                <Text style={styles.optionText}>
+                                    {props.interval.length === 7 ? "Everyday" : "Custom"}
+                                </Text>
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => showTimePicker(true)}>
                             <View style={styles.options}>
                                 <Icon name="alarm" size={15} color={colorTheme.red} />
-                                <Text style={styles.optionText}>9:00 AM</Text>
+                                <Text style={styles.optionText}>
+                                    {dayjs(props.time).format("h:mm A")}
+                                </Text>
                             </View>
                         </TouchableOpacity>
 
@@ -83,6 +100,10 @@ export function AddHabit() {
                             type="ionicons"
                             size={30}
                             containerStyle={{ flex: 1, alignItems: "flex-end" }}
+                            onPress={() => {
+                                props.addHabit();
+                                toggleInputModal();
+                            }}
                         />
                     </View>
                 </View>
@@ -95,18 +116,83 @@ export function AddHabit() {
                 onBackButtonPress={toggleIntervalModal}
                 style={styles.modal}
             >
-                <IntervalPicker toggleModal={toggleIntervalModal} />
+                <IntervalPicker
+                    selectedDays={props.interval}
+                    setSelectedDays={props.setInterval}
+                    toggleModal={toggleIntervalModal}
+                />
             </Modal>
 
             {showingTimePicker && (
                 <DateTimePicker
-                    value={new Date()}
+                    value={props.time}
                     mode="time"
-                    onChange={() => showTimePicker(false)}
+                    onChange={(_, time) => {
+                        showTimePicker(false);
+                        time && props.setTime(time);
+                    }}
                     onTouchCancel={() => showTimePicker(false)}
                 />
             )}
         </>
+    );
+}
+
+export function AddHabit(props: {
+    addHabit: (data: { title: string; reminder: Time; interval: Day[] }) => void;
+}) {
+    const [text, setText] = useState("");
+    const [interval, setInterval] = useState<Day[]>([]);
+    const [time, setTime] = useState(new Date());
+
+    const validateForm = () => {
+        if (!text.trim().length) {
+            Alert.alert("ERROR", "Please write your habit");
+            return false;
+        }
+
+        if (!interval.length) {
+            Alert.alert("ERROR", "Please select the days you want to do this habit");
+            return false;
+        }
+
+        if (!time) {
+            Alert.alert("ERROR", "Please select the time you check-in on this habit");
+            return false;
+        }
+
+        return true;
+    };
+
+    const addHabit = () => {
+        if (!validateForm()) {
+            return;
+        }
+
+        props.addHabit({
+            title: text.trim(),
+            interval: interval,
+            reminder: {
+                hour: time.getHours(),
+                minute: time.getMinutes(),
+            },
+        });
+
+        setText("");
+        setInterval([]);
+        setTime(new Date());
+    };
+
+    return (
+        <AddHabitView
+            text={text}
+            interval={interval}
+            time={time}
+            changeText={(t) => setText(t)}
+            setInterval={(days) => setInterval(days)}
+            setTime={(t) => setTime(t)}
+            addHabit={addHabit}
+        />
     );
 }
 

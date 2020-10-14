@@ -21,7 +21,7 @@ const tabBarOptions = () => ({
 });
 export function HomeTabNavigator() {
     return (
-        <HomeTab.Navigator tabBarOptions={tabBarOptions()}>
+        <HomeTab.Navigator initialRouteName="Habits" tabBarOptions={tabBarOptions()}>
             <HomeTab.Screen
                 name="Today"
                 component={Today}
