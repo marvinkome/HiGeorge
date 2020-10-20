@@ -6,7 +6,7 @@ import { Button, Input, Icon, Text } from "react-native-elements";
 import { IntervalPicker } from "./IntervalPicker";
 import { colorTheme } from "styles/theme";
 import { fonts } from "styles/fonts";
-import { Day, Time } from "store";
+import { AllDays, Day, Time } from "store";
 import dayjs from "dayjs";
 
 type AddHabitViewProps = {
@@ -142,7 +142,7 @@ export function AddHabit(props: {
     addHabit: (data: { title: string; reminder: Time; interval: Day[] }) => void;
 }) {
     const [text, setText] = useState("");
-    const [interval, setInterval] = useState<Day[]>([]);
+    const [interval, setInterval] = useState<Day[]>(AllDays);
     const [time, setTime] = useState(new Date());
 
     const validateForm = () => {
@@ -179,7 +179,7 @@ export function AddHabit(props: {
         });
 
         setText("");
-        setInterval([]);
+        setInterval(AllDays);
         setTime(new Date());
     };
 

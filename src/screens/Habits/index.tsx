@@ -9,6 +9,5 @@ export const Habits = observer(() => {
         addHabit: store.addHabit,
     }));
 
-    console.log(habits);
-    return <HabitsScreen habits={habits} addHabit={addHabit} />;
+    return <HabitsScreen habits={habits.slice()} addHabit={addHabit} />;
 });

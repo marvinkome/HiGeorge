@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, CheckBox, Text } from "react-native-elements";
-import { Day } from "store";
+import { AllDays, Day } from "store";
 import { fonts } from "styles/fonts";
 import { colorTheme } from "styles/theme";
 
@@ -10,8 +10,6 @@ type IProps = {
     setSelectedDays: (days: Day[]) => void;
     toggleModal: () => void;
 };
-
-const days: Day[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export function IntervalPicker({ selectedDays, setSelectedDays, toggleModal }: IProps) {
     const toggleDay = (day: Day) => {
@@ -24,7 +22,7 @@ export function IntervalPicker({ selectedDays, setSelectedDays, toggleModal }: I
 
     const toggleSelectAllDays = () => {
         if (selectedDays.length !== 7) {
-            setSelectedDays(days);
+            setSelectedDays(AllDays);
         } else {
             setSelectedDays([]);
         }
@@ -43,7 +41,7 @@ export function IntervalPicker({ selectedDays, setSelectedDays, toggleModal }: I
             </View>
 
             <View style={styles.intervalDayPicker}>
-                {days.map((day, idx) => {
+                {AllDays.map((day, idx) => {
                     const isSelected = selectedDays.includes(day);
 
                     return (

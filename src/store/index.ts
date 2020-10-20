@@ -28,6 +28,16 @@ export type Habit = {
     longestStreak: number;
 };
 
+export const AllDays: Day[] = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+];
+
 export function createStore() {
     class Store {
         habits: Habit[] = [
