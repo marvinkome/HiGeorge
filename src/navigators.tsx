@@ -11,7 +11,6 @@ import { LandingPage } from "screens/LandingPage";
 import { Today } from "screens/Today";
 import { Habits } from "screens/Habits";
 import { AddHabit } from "screens/AddHabit";
-// import { Goals } from "screens/Goals";
 
 const EmptyScreen = () => null;
 
@@ -21,7 +20,7 @@ const tabBarOptions = () => ({
 });
 export function HomeTabNavigator() {
     return (
-        <HomeTab.Navigator initialRouteName="Habits" tabBarOptions={tabBarOptions()}>
+        <HomeTab.Navigator tabBarOptions={tabBarOptions()}>
             <HomeTab.Screen
                 name="Today"
                 component={Today}
@@ -71,31 +70,6 @@ export function HomeTabNavigator() {
                     ),
                 }}
             />
-
-            {/* <HomeTab.Screen
-                name="Goals"
-                component={Goals}
-                options={{
-                    tabBarLabel: ({ focused }) => (
-                        <Text
-                            style={[
-                                navigationStyles.tabBarLabel,
-                                { color: focused ? colorTheme.secondary : colorTheme.black },
-                            ]}
-                        >
-                            Goals
-                        </Text>
-                    ),
-                    tabBarIcon: ({ focused }) => (
-                        <Icon
-                            name="award"
-                            type="feather"
-                            size={23}
-                            color={focused ? colorTheme.secondary : colorTheme.black}
-                        />
-                    ),
-                }}
-            /> */}
         </HomeTab.Navigator>
     );
 }

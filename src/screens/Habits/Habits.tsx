@@ -14,7 +14,7 @@ export function HabitsScreen(props: IProps) {
     return (
         <Container description="These are the habits you want to keep">
             {!props.habits?.length && (
-                <Text>
+                <Text style={{ marginBottom: 32 }}>
                     You currently have no habit. Click the button to add a habit you want to track
                 </Text>
             )}

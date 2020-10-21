@@ -14,7 +14,7 @@ type IProps = {
 export function IntervalPicker({ selectedDays, setSelectedDays, toggleModal }: IProps) {
     const toggleDay = (day: Day) => {
         if (selectedDays.includes(day)) {
-            setSelectedDays(selectedDays.filter((d) => d === day));
+            setSelectedDays(selectedDays.filter((d) => d !== day));
         } else {
             setSelectedDays(selectedDays.concat(day));
         }

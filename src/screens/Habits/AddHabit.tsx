@@ -147,17 +147,17 @@ export function AddHabit(props: {
 
     const validateForm = () => {
         if (!text.trim().length) {
-            Alert.alert("ERROR", "Please write your habit");
+            Alert.alert("Error", "Please write your habit");
             return false;
         }
 
         if (!interval.length) {
-            Alert.alert("ERROR", "Please select the days you want to do this habit");
+            Alert.alert("Error", "Please select the days you want to do this habit");
             return false;
         }
 
         if (!time) {
-            Alert.alert("ERROR", "Please select the time you check-in on this habit");
+            Alert.alert("Error", "Please select the time you check-in on this habit");
             return false;
         }
 

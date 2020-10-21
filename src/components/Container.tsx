@@ -11,6 +11,7 @@ export function Container(props: { description: string; children: any }) {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.innerContainer}
+                keyboardShouldPersistTaps="always"
             >
                 {props.children}
             </ScrollView>

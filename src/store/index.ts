@@ -1,6 +1,11 @@
 import dayjs from "dayjs";
 import shortId from "short-uuid";
+import { persist } from "mobx-persist";
 import { action, observable, computed, makeObservable } from "mobx";
+import { NotificationService } from "libs/notification/service";
+
+const objectSupport = require("dayjs/plugin/objectSupport");
+dayjs.extend(objectSupport);
 
 export type Time = {
     hour: number;
@@ -29,80 +34,19 @@ export type Habit = {
 };
 
 export const AllDays: Day[] = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
 ];
 
-export function createStore() {
+export function createStore(notification: NotificationService) {
     class Store {
-        habits: Habit[] = [
-            {
-                id: shortId.generate(),
-                title: "Do pushups every morning",
-                reminder: { hour: 9, minute: 0 },
-                interval: ["Monday", "Wednesday", "Thursday", "Friday"],
-                doneToday: true,
-                streak: 1,
-                longestStreak: 1,
-            },
-            {
-                id: shortId.generate(),
-                title: "Take a lecture on physics",
-                reminder: { hour: 9, minute: 0 },
-                interval: ["Monday", "Thursday", "Saturday"],
-                doneToday: false,
-                streak: 0,
-                longestStreak: 1,
-            },
-            {
-                id: shortId.generate(),
-                title: "Learn programming",
-                reminder: { hour: 9, minute: 0 },
-                interval: [
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday",
-                ],
-                doneToday: false,
-                streak: 0,
-                longestStreak: 10,
-            },
-            {
-                id: shortId.generate(),
-                title: "Go to bed early",
-                reminder: { hour: 9, minute: 0 },
-                interval: [
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday",
-                ],
-                doneToday: false,
-                streak: 0,
-                longestStreak: 10,
-            },
-            {
-                id: shortId.generate(),
-                title: "Cook",
-                reminder: { hour: 9, minute: 0 },
-                interval: ["Monday", "Wednesday", "Friday", "Sunday"],
-                doneToday: false,
-                streak: 0,
-                longestStreak: 10,
-            },
-        ];
+        @persist("list")
+        habits: Habit[] = [];
 
         constructor() {
             makeObservable(this, {
@@ -115,14 +59,46 @@ export function createStore() {
             });
         }
 
-        addHabit = (habit: { title: string; reminder: Time; interval: Day[] }) => {
-            this.habits.push({
-                ...habit,
+        addHabit = (habitData: { title: string; reminder: Time; interval: Day[] }) => {
+            const habit = {
+                ...habitData,
                 id: shortId.generate(),
                 doneToday: false,
                 streak: 0,
                 longestStreak: 0,
-            });
+            };
+
+            this.habits.push(habit);
+
+            // create notification
+            const notificationObj: any = {
+                title: "It's time to check-up on your habit",
+                message: `Hey there 👋. Did you do "${habit.title}" today?`,
+                actions: ["Yes"] as any,
+                userInfo: {
+                    habitId: habit.id,
+                },
+            };
+
+            // if daily, schedule notification daily
+            if (habit.interval.length === 7) {
+                notification.scheduleNotification({
+                    ...notificationObj,
+                    date: dayjs(habit.reminder as any).toDate(),
+                    repeatType: "day",
+                });
+            } else {
+                // repeat weekly on specific days
+                for (const day of habit.interval) {
+                    notification.scheduleNotification({
+                        ...notificationObj,
+                        date: dayjs(habit.reminder as any)
+                            .day(AllDays.indexOf(day))
+                            .toDate(),
+                        repeatType: "week",
+                    });
+                }
+            }
         };
 
         markHabitAsDone = (habitId: string) => {
@@ -156,7 +132,6 @@ export function createStore() {
         };
 
         get todaysHabits() {
-            console.log("computing");
             const today = dayjs(new Date()).format("dddd") as Day;
             return this.habits.filter(
                 (habit) => habit.interval.includes(today) && !habit.doneToday
