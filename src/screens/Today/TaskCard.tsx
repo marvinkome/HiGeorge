@@ -32,7 +32,9 @@ export function TaskCard(props: IProps) {
                         color={props.streak ? colorTheme.red : colorTheme.grey1}
                         style={{ marginRight: 5 }}
                     />
-                    <Text style={{ ...fonts.bold }}>{props.streak}</Text>
+                    <Text style={{ ...fonts.bold }}>
+                        {props.streak} {props.streak !== 1 ? "days" : "day"} streak
+                    </Text>
                 </View>
             </View>
         </View>

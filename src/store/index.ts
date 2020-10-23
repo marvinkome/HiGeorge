@@ -27,10 +27,9 @@ export type Habit = {
     reminder: Time;
     interval: Day[];
 
-    doneToday: boolean;
+    lastCheckTime: Date | null;
 
     streak: number;
-    longestStreak: number;
 };
 
 export const AllDays: Day[] = [
@@ -43,6 +42,27 @@ export const AllDays: Day[] = [
     "Saturday",
 ];
 
+function getPrevDay(interval: Day[]) {
+    const today = dayjs().day();
+
+    const sortInterval = interval
+        .map((day) => {
+            const idx = AllDays.indexOf(day);
+            const dayDiff = idx - today;
+            return {
+                id: dayDiff < 0 ? dayDiff + AllDays.length : dayDiff,
+                day,
+            };
+        })
+        .sort((a, b) => a.id - b.id)
+        .map((i) => i.day);
+
+    console.log(sortInterval);
+
+    const prevDay = sortInterval[sortInterval.length - 1];
+    return AllDays.indexOf(prevDay);
+}
+
 export function createStore(notification: NotificationService) {
     class Store {
         @persist("list")
@@ -54,18 +74,18 @@ export function createStore(notification: NotificationService) {
                 addHabit: action,
                 markHabitAsDone: action,
                 editHabit: action,
+                setup: action,
                 todaysHabits: computed,
                 todaysCompletedHabits: computed,
             });
         }
 
         addHabit = (habitData: { title: string; reminder: Time; interval: Day[] }) => {
-            const habit = {
+            const habit: Habit = {
                 ...habitData,
                 id: shortId.generate(),
-                doneToday: false,
                 streak: 0,
-                longestStreak: 0,
+                lastCheckTime: null,
             };
 
             this.habits.push(habit);
@@ -82,19 +102,29 @@ export function createStore(notification: NotificationService) {
 
             // if daily, schedule notification daily
             if (habit.interval.length === 7) {
+                let date = dayjs(habit.reminder as any);
+                if (date.isBefore(dayjs())) {
+                    date = dayjs(habit.reminder as any).add(1, "d");
+                }
+
                 notification.scheduleNotification({
                     ...notificationObj,
-                    date: dayjs(habit.reminder as any).toDate(),
+                    date: date.toDate(),
                     repeatType: "day",
                 });
             } else {
                 // repeat weekly on specific days
                 for (const day of habit.interval) {
+                    let date = dayjs(habit.reminder as any).day(AllDays.indexOf(day));
+                    if (date.isBefore(dayjs())) {
+                        date = dayjs(habit.reminder as any)
+                            .day(AllDays.indexOf(day))
+                            .add(1, "w");
+                    }
+
                     notification.scheduleNotification({
                         ...notificationObj,
-                        date: dayjs(habit.reminder as any)
-                            .day(AllDays.indexOf(day))
-                            .toDate(),
+                        date: date.toDate(),
                         repeatType: "week",
                     });
                 }
@@ -102,14 +132,17 @@ export function createStore(notification: NotificationService) {
         };
 
         markHabitAsDone = (habitId: string) => {
-            const habitIdx = this.habits.findIndex((h) => h.id === habitId);
-            if (habitIdx < 0) {
+            const habit = this.habits.find((h) => h.id === habitId);
+            if (!habit) {
                 return false;
             }
 
-            this.habits[habitIdx].doneToday = true;
-            this.habits[habitIdx].streak += 1;
-            this.habits[habitIdx].longestStreak += 1;
+            const done = habit.lastCheckTime && dayjs(habit.lastCheckTime).day() === dayjs().day();
+
+            if (!done) {
+                habit.lastCheckTime = new Date();
+                habit.streak += 1;
+            }
 
             return true;
         };
@@ -131,16 +164,42 @@ export function createStore(notification: NotificationService) {
             return true;
         };
 
+        setup = () => {
+            for (const habit of this.habits) {
+                // check if user did habit the last time he/she promised to
+                if (!habit.lastCheckTime) {
+                    habit.streak = 0;
+                    return;
+                }
+
+                const lastCheckTime = dayjs(habit.lastCheckTime).day();
+                const promisedTime = getPrevDay(habit.interval);
+
+                if (lastCheckTime !== promisedTime) {
+                    // reset streak
+                    habit.streak = 0;
+                    return;
+                }
+            }
+        };
+
         get todaysHabits() {
             const today = dayjs(new Date()).format("dddd") as Day;
             return this.habits.filter(
-                (habit) => habit.interval.includes(today) && !habit.doneToday
+                (habit) =>
+                    habit.interval.includes(today) &&
+                    !(habit.lastCheckTime && dayjs(habit.lastCheckTime).day() === dayjs().day())
             );
         }
 
         get todaysCompletedHabits() {
             const today = dayjs(new Date()).format("dddd") as Day;
-            return this.habits.filter((habit) => habit.interval.includes(today) && habit.doneToday);
+            return this.habits.filter(
+                (habit) =>
+                    habit.interval.includes(today) &&
+                    habit.lastCheckTime &&
+                    dayjs(habit.lastCheckTime).day() === dayjs().day()
+            );
         }
     }
 

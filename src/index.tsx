@@ -12,22 +12,17 @@ import { createStore } from "store";
 import { NotificationService } from "libs/notification/service";
 
 const notification = new NotificationService((notifObj: any) => {
-    // on click notification
-    console.log(notifObj);
-
     if (notifObj.action === "Yes") {
         store.markHabitAsDone(notifObj.data.habitId);
     }
 });
 
-// AsyncStorage.clear();
-// notification.cancelAll();
-// notification.getScheduledLocalNotifications((n: any) => console.log(n));
-
 // setup mobx state
 const store = createStore(notification);
 const hydrate = create({ storage: AsyncStorage });
-hydrate("HiGeorgeState", store);
+hydrate("HiGeorgeState", store).then(() => {
+    store.setup();
+});
 
 export default function App() {
     return (

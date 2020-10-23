@@ -5,6 +5,7 @@ import { Container } from "components/Container";
 import { TaskCard } from "./TaskCard";
 import { Habit } from "store";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import dayjs from "dayjs";
 
 type IProps = {
     habits: Habit[];
@@ -21,7 +22,9 @@ export function TodayScreen(props: IProps) {
             {props.habits?.map((habit) => (
                 <TaskCard
                     key={habit.id}
-                    done={habit.doneToday}
+                    done={
+                        !!habit.lastCheckTime && dayjs(habit.lastCheckTime).day() === dayjs().day()
+                    }
                     title={habit.title}
                     streak={habit.streak}
                     markAsDone={() => props.markAsDone(habit.id)}
@@ -46,7 +49,10 @@ export function TodayScreen(props: IProps) {
             {showingCompleted &&
                 props.completedHabits.map((habit) => (
                     <TaskCard
-                        done={habit.doneToday}
+                        done={
+                            !!habit.lastCheckTime &&
+                            dayjs(habit.lastCheckTime).day() === dayjs().day()
+                        }
                         title={habit.title}
                         key={habit.id}
                         streak={habit.streak}
